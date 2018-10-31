@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.1.0 (36652f6)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: uchiwa
+  name: uchiwa
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: uchiwa
+    spec:
+      containers:
+      - env:
+        - name: HTTP_PASS
+          value: admin
+        - name: HTTP_USER
+          value: admin
+        image: anroots/uchiwa
+        name: uchiwa
+        ports:
+        - containerPort: 80
+        resources: {}
+      restartPolicy: Always
+status: {}

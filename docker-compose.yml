@@ -1,0 +1,58 @@
+rabbitmq:
+  image: tutum/rabbitmq
+  environment:
+    RABBITMQ_USER: admin
+    RABBITMQ_PASS: admin
+  restart: always
+
+redis:
+  image: tutum/redis
+  environment:
+    REDIS_PASS: admin
+  restart: always
+
+server:
+  image: anroots/sensu-server:example
+  links:
+    - rabbitmq
+    - redis
+  restart: always
+
+client:
+  image: anroots/sensu-client:example
+  links:
+    - rabbitmq
+  environment:
+    # Specify Sensu subscriptions for the client as a CSV string
+    SUBSCRIPTIONS: development,web
+  restart: always
+
+api:
+  image: anroots/sensu-api
+  links:
+    - rabbitmq
+    - redis
+  environment:
+    API_USER: admin
+    API_PASS: admin
+  restart: always
+
+uchiwa:
+  image: anroots/uchiwa
+  links:
+    - api
+    - db
+  ports:
+    - 3000:80
+  environment:
+    HTTP_USER: admin
+    HTTP_PASS: admin
+  restart: always
+
+db:
+  image: postgres
+  ports:
+  - "5432:5432"
+  environment:
+    POSTGRES_USER: "admin"
+    POSTGRES_PASSWORD: "admin"
